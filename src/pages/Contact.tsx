@@ -30,15 +30,18 @@ export default function Contact() {
     reset,
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  // 🧠 Cargar historial desde localStorage
   useEffect(() => {
     const savedLogs = localStorage.getItem("contactLogs");
     if (savedLogs) setLogs(JSON.parse(savedLogs));
   }, []);
 
+  // 💾 Guardar historial cada vez que cambie
   useEffect(() => {
     localStorage.setItem("contactLogs", JSON.stringify(logs));
   }, [logs]);
 
+  // 📬 Envío de formulario
   const onSubmit = async (data: FormData) => {
     const now = new Date();
     const logEntry = {
@@ -49,7 +52,7 @@ export default function Contact() {
     };
 
     try {
-      await sendContact(data);
+      await sendContact(data); // Simula envío (sin backend)
       logEntry.status = "✅ Enviado correctamente";
       setLogs((prev) => [logEntry, ...prev]);
       setToast({ type: "success", text: "✅ Mensaje enviado correctamente" });
@@ -67,6 +70,7 @@ export default function Contact() {
 
   return (
     <div className="relative min-h-screen flex flex-col md:flex-row items-center justify-center gap-10 overflow-hidden text-white">
+      {/* 🌕 Fondo animado */}
       <div className="absolute inset-0 -z-10">
         <img
           src="https://64.media.tumblr.com/2032c86dc2ccfdfca586a13931a9df69/14c75a25ba5b48cd-e2/s540x810/e0768e7a4f543decd8e14b7bd8e536b34fdb109a.gif"
@@ -76,13 +80,15 @@ export default function Contact() {
         <div className="absolute inset-0 bg-[#0a0a1a]/40 backdrop-blur-[1px]" />
       </div>
 
+      {/* 📊 Panel lateral */}
       <div className="flex flex-col gap-5">
         <StatsPanel />
         <PaymentsLogPanel logs={logs} />
       </div>
 
-      <div className="relative z-10 electric-border orange p-8 w-full max-w-2xl text-white">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
+      {/* 💬 Formulario con borde eléctrico */}
+      <div className="relative z-10 electric-border p-8 w-full max-w-2xl text-white">
+        <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-[0_0_6px_rgba(0,255,150,0.7)]">
           📬 Registro de Contacto
         </h2>
 
@@ -91,7 +97,7 @@ export default function Contact() {
             <input
               {...register("name")}
               placeholder="Tu nombre completo"
-              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/70 border border-white/10 hover:border-white/30 transition-all"
+              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400/70 border border-white/10 hover:border-green-300/50 transition-all"
             />
             {errors.name && <p className="text-red-400 text-sm">{errors.name.message}</p>}
           </div>
@@ -100,7 +106,7 @@ export default function Contact() {
             <input
               {...register("email")}
               placeholder="correo@ejemplo.com"
-              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/70 border border-white/10 hover:border-white/30 transition-all"
+              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400/70 border border-white/10 hover:border-green-300/50 transition-all"
             />
             {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
           </div>
@@ -109,7 +115,7 @@ export default function Contact() {
             <input
               {...register("subject")}
               placeholder="Asunto"
-              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/70 border border-white/10 hover:border-white/30 transition-all"
+              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400/70 border border-white/10 hover:border-green-300/50 transition-all"
             />
             {errors.subject && <p className="text-red-400 text-sm">{errors.subject.message}</p>}
           </div>
@@ -119,7 +125,7 @@ export default function Contact() {
               {...register("message")}
               placeholder="Escribe tu mensaje..."
               rows={5}
-              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/70 border border-white/10 hover:border-white/30 transition-all"
+              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400/70 border border-white/10 hover:border-green-300/50 transition-all"
             ></textarea>
             {errors.message && <p className="text-red-400 text-sm">{errors.message.message}</p>}
           </div>
@@ -128,7 +134,7 @@ export default function Contact() {
             <input
               {...register("budget")}
               placeholder="Presupuesto (opcional)"
-              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/70 border border-white/10 hover:border-white/30 transition-all"
+              className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400/70 border border-white/10 hover:border-green-300/50 transition-all"
             />
           </div>
 
@@ -141,7 +147,7 @@ export default function Contact() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-700 hover:brightness-125 shadow-[0_0_20px_3px_rgba(255,255,255,0.1)] p-3 rounded-xl font-semibold text-white transition-all duration-300"
+            className="w-full bg-gradient-to-r from-emerald-500 via-lime-500 to-green-600 hover:brightness-125 shadow-[0_0_20px_3px_rgba(0,255,120,0.4)] p-3 rounded-xl font-semibold text-white transition-all duration-300"
           >
             {isSubmitting ? "Enviando..." : "Enviar mensaje"}
           </button>
