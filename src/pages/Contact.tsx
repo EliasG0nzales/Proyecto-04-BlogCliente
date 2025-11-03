@@ -22,7 +22,7 @@ type FormData = z.infer<typeof schema>;
 export default function Contact() {
   const [toast, setToast] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [logs, setLogs] = useState<any[]>([]);
-  const [connected, setConnected] = useState(true); // ✅ conexión activa/inactiva
+  const [connected, setConnected] = useState(true);
 
   const {
     register,
@@ -31,16 +31,18 @@ export default function Contact() {
     reset,
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  // 🔄 Cargar historial guardado
   useEffect(() => {
     const savedLogs = localStorage.getItem("contactLogs");
     if (savedLogs) setLogs(JSON.parse(savedLogs));
   }, []);
 
+  // 💾 Guardar historial
   useEffect(() => {
     localStorage.setItem("contactLogs", JSON.stringify(logs));
   }, [logs]);
 
-  // 🟢 Alternar conexión manualmente desde StatsPanel (escucha global)
+  // 🟢 Escuchar cambios de conexión desde StatsPanel
   useEffect(() => {
     const handler = (e: any) => {
       if (typeof e.detail?.connected === "boolean") {
@@ -61,7 +63,7 @@ export default function Contact() {
       status: "",
     };
 
-    // ⚠️ Si está desconectado, lanzar error y guardar en historial
+    // 🚫 Si está desconectado, error inmediato
     if (!connected) {
       logEntry.status = "❌ Error: Servicio desconectado";
       setLogs((prev) => [logEntry, ...prev]);
@@ -69,6 +71,8 @@ export default function Contact() {
         type: "error",
         text: "❌ El servicio está desconectado. No se puede enviar el mensaje.",
       });
+      // 🔊 Emitir evento de fallo global
+      window.dispatchEvent(new CustomEvent("updateMetrics", { detail: { ok: false } }));
       return;
     }
 
@@ -77,13 +81,18 @@ export default function Contact() {
       logEntry.status = "✅ Enviado correctamente";
       setLogs((prev) => [logEntry, ...prev]);
       setToast({ type: "success", text: "✅ Mensaje enviado correctamente" });
-      window.dispatchEvent(new CustomEvent("messageSent", { detail: { success: true } }));
+
+      // 🔊 Evento de éxito global
+      window.dispatchEvent(new CustomEvent("updateMetrics", { detail: { ok: true } }));
+
       reset();
     } catch (error) {
       logEntry.status = "❌ Error al enviar mensaje";
       setLogs((prev) => [logEntry, ...prev]);
       setToast({ type: "error", text: "❌ Error al enviar mensaje. Intenta nuevamente." });
-      window.dispatchEvent(new CustomEvent("messageSent", { detail: { success: false } }));
+
+      // 🔊 Evento de fallo global
+      window.dispatchEvent(new CustomEvent("updateMetrics", { detail: { ok: false } }));
     } finally {
       setTimeout(() => setToast(null), 4000);
     }
@@ -108,12 +117,13 @@ export default function Contact() {
       </div>
 
       {/* 💬 Formulario */}
-      <div className="relative z-10 electric-border p-8 w-full max-w-2xl text-white">
+      <div className="relative z-10 electric-border-green p-8 w-full max-w-2xl text-white">
         <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-[0_0_6px_rgba(0,255,150,0.7)]">
           📬 Registro de Contacto
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Campos */}
           <div>
             <input
               {...register("name")}
@@ -167,7 +177,7 @@ export default function Contact() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !connected}
             className={`w-full ${
               connected
                 ? "bg-gradient-to-r from-emerald-500 via-lime-500 to-green-600 hover:brightness-125"
@@ -178,6 +188,7 @@ export default function Contact() {
           </button>
         </form>
 
+        {/* 🔔 Toast */}
         {toast && (
           <div
             className={`fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white animate-fade-in-up transition-all duration-500 ${

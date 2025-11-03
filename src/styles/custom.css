@@ -41,6 +41,32 @@ button:hover {
   @apply bg-white/10 p-4 rounded-xl shadow-xl border border-white/20 text-gray-200;
 }
 
+.electric-border-green {
+  position: relative;
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, rgba(20, 30, 40, 0.85), rgba(10, 10, 20, 0.85));
+  box-shadow: 0 0 20px rgba(0, 255, 120, 0.4);
+  overflow: hidden;
+}
+
+.electric-border-green::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #00ff9d, #00ffcc, #00ff66, #00ff9d);
+  background-size: 300% 300%;
+  filter: blur(6px);
+  animation: electricFlow 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes electricFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* Animación del mensaje de éxito */
 @keyframes fadeInOut {
   0% { opacity: 0; transform: translateY(-10px); }
