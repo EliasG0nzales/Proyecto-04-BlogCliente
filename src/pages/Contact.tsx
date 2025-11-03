@@ -103,11 +103,12 @@ export default function Contact() {
       {/* 🌕 Fondo */}
       <div className="absolute inset-0 -z-10">
         <img
-          src="https://64.media.tumblr.com/2032c86dc2ccfdfca586a13931a9df69/14c75a25ba5b48cd-e2/s540x810/e0768e7a4f543decd8e14b7bd8e536b34fdb109a.gif"
+          src="https://i.pinimg.com/originals/fa/56/b1/fa56b1b302d8038394f4af09a9f96f4e.gif"
           alt="Fondo lunar brillante"
-          className="w-full h-full object-cover brightness-[0.9] saturate-[1.4]"
+          className="w-full h-full object-cover brightness-100 saturate-125 contrast-125"
         />
-        <div className="absolute inset-0 bg-[#0a0a1a]/40 backdrop-blur-[1px]" />
+        {/* ✅ Oscurecedor sutil para mejorar contraste */}
+        <div className="absolute inset-0 bg-[#050510]/40 backdrop-blur-[0px]" />
       </div>
 
       {/* 📊 Panel lateral */}
