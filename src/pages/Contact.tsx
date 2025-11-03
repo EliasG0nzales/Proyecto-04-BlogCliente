@@ -22,6 +22,7 @@ type FormData = z.infer<typeof schema>;
 export default function Contact() {
   const [toast, setToast] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [logs, setLogs] = useState<any[]>([]);
+  const [connected, setConnected] = useState(true); // ✅ conexión activa/inactiva
 
   const {
     register,
@@ -30,16 +31,25 @@ export default function Contact() {
     reset,
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  // 🧠 Cargar historial desde localStorage
   useEffect(() => {
     const savedLogs = localStorage.getItem("contactLogs");
     if (savedLogs) setLogs(JSON.parse(savedLogs));
   }, []);
 
-  // 💾 Guardar historial cada vez que cambie
   useEffect(() => {
     localStorage.setItem("contactLogs", JSON.stringify(logs));
   }, [logs]);
+
+  // 🟢 Alternar conexión manualmente desde StatsPanel (escucha global)
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (typeof e.detail?.connected === "boolean") {
+        setConnected(e.detail.connected);
+      }
+    };
+    window.addEventListener("connectionChange", handler);
+    return () => window.removeEventListener("connectionChange", handler);
+  }, []);
 
   // 📬 Envío de formulario
   const onSubmit = async (data: FormData) => {
@@ -51,8 +61,19 @@ export default function Contact() {
       status: "",
     };
 
+    // ⚠️ Si está desconectado, lanzar error y guardar en historial
+    if (!connected) {
+      logEntry.status = "❌ Error: Servicio desconectado";
+      setLogs((prev) => [logEntry, ...prev]);
+      setToast({
+        type: "error",
+        text: "❌ El servicio está desconectado. No se puede enviar el mensaje.",
+      });
+      return;
+    }
+
     try {
-      await sendContact(data); // Simula envío (sin backend)
+      await sendContact(data);
       logEntry.status = "✅ Enviado correctamente";
       setLogs((prev) => [logEntry, ...prev]);
       setToast({ type: "success", text: "✅ Mensaje enviado correctamente" });
@@ -70,7 +91,7 @@ export default function Contact() {
 
   return (
     <div className="relative min-h-screen flex flex-col md:flex-row items-center justify-center gap-10 overflow-hidden text-white">
-      {/* 🌕 Fondo animado */}
+      {/* 🌕 Fondo */}
       <div className="absolute inset-0 -z-10">
         <img
           src="https://64.media.tumblr.com/2032c86dc2ccfdfca586a13931a9df69/14c75a25ba5b48cd-e2/s540x810/e0768e7a4f543decd8e14b7bd8e536b34fdb109a.gif"
@@ -86,7 +107,7 @@ export default function Contact() {
         <PaymentsLogPanel logs={logs} />
       </div>
 
-      {/* 💬 Formulario con borde eléctrico */}
+      {/* 💬 Formulario */}
       <div className="relative z-10 electric-border p-8 w-full max-w-2xl text-white">
         <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-[0_0_6px_rgba(0,255,150,0.7)]">
           📬 Registro de Contacto
@@ -147,9 +168,13 @@ export default function Contact() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-emerald-500 via-lime-500 to-green-600 hover:brightness-125 shadow-[0_0_20px_3px_rgba(0,255,120,0.4)] p-3 rounded-xl font-semibold text-white transition-all duration-300"
+            className={`w-full ${
+              connected
+                ? "bg-gradient-to-r from-emerald-500 via-lime-500 to-green-600 hover:brightness-125"
+                : "bg-gray-600 cursor-not-allowed"
+            } shadow-[0_0_20px_3px_rgba(0,255,120,0.4)] p-3 rounded-xl font-semibold text-white transition-all duration-300`}
           >
-            {isSubmitting ? "Enviando..." : "Enviar mensaje"}
+            {isSubmitting ? "Enviando..." : connected ? "Enviar mensaje" : "Servicio desconectado"}
           </button>
         </form>
 
