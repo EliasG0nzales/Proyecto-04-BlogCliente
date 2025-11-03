@@ -1,3 +1,4 @@
+/* 🌌 Fondo general */
 body {
   background: radial-gradient(circle at top left, #2e026d, #15162c);
   background-attachment: fixed;
@@ -5,6 +6,7 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+/* 🌈 Animación de aurora */
 @keyframes auroraFlow {
   0% {
     background-position: 0% 50%;
@@ -23,30 +25,74 @@ body {
   animation: auroraFlow 12s ease infinite;
 }
 
-input, textarea, select {
+/* 🧾 Inputs y campos */
+input,
+textarea,
+select {
   @apply w-full p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400;
 }
 
+/* 🔘 Botones */
 button {
   @apply w-full py-3 rounded-lg font-semibold text-white transition;
   background: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
 }
+
 button:hover {
   opacity: 0.9;
   transform: scale(1.02);
 }
 
-/* Panel de estadísticas */
+/* 📊 Panel de estadísticas */
 .stats-card {
   @apply bg-white/10 p-4 rounded-xl shadow-xl border border-white/20 text-gray-200;
 }
 
+/* ✨ Animación del mensaje de éxito */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.alert-success {
+  @apply text-green-300 bg-green-500/20 border border-green-400/30 p-3 rounded-lg text-center mt-4;
+  animation: fadeInOut 4s ease forwards;
+}
+
+/* 🌿 Scrollbar aurora */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9333ea, #3b82f6);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+/* ⚡ Efecto eléctrico verde */
 .electric-border-green {
   position: relative;
   border-radius: 1.5rem;
   background: linear-gradient(180deg, rgba(20, 30, 40, 0.85), rgba(10, 10, 20, 0.85));
   box-shadow: 0 0 20px rgba(0, 255, 120, 0.4);
   overflow: hidden;
+  border: 2px solid rgba(0, 255, 130, 0.3);
 }
 
 .electric-border-green::before {
@@ -62,32 +108,22 @@ button:hover {
 }
 
 @keyframes electricFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-/* Animación del mensaje de éxito */
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-10px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
+/* 💡 Glow suave en texto y paneles */
+.text-glow-green {
+  text-shadow: 0 0 8px rgba(0, 255, 130, 0.6);
 }
 
-.alert-success {
-  @apply text-green-300 bg-green-500/20 border border-green-400/30 p-3 rounded-lg text-center mt-4;
-  animation: fadeInOut 4s ease forwards;
-}
-
-/* Scrollbar aurora */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #9333ea, #3b82f6);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #0f172a;
+.panel-shadow-green {
+  box-shadow: 0 0 25px rgba(0, 255, 130, 0.25);
 }
