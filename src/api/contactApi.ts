@@ -1,7 +1,5 @@
 function trackMetric(metric: { ok: boolean; latency?: number }) {
-  const stats = JSON.parse(
-    localStorage.getItem("metrics") || '{"ok":0,"fail":0,"latency":[]}'
-  );
+  const stats = JSON.parse(localStorage.getItem("metrics") || '{"ok":0,"fail":0,"latency":[]}');
   if (metric.ok) {
     stats.ok++;
     stats.latency.push(metric.latency || 0);
@@ -24,13 +22,13 @@ function saveToHistory(payload: any, success: boolean) {
     subject: payload.subject,
     message: payload.message,
     budget: payload.budget || "—",
-    success,
+    status: success ? "✅ Enviado correctamente" : "❌ Error en el envío",
   });
 
   localStorage.setItem("paymentsHistory", JSON.stringify(history));
 }
 
-export async function sendContact(payload: any, idempotencyKey: string) {
+export async function sendContact(payload: any) {
   const maxRetries = 2;
   let attempt = 0;
 
@@ -42,19 +40,17 @@ export async function sendContact(payload: any, idempotencyKey: string) {
 
       const success = Math.random() > 0.1;
       const t1 = performance.now();
-
       trackMetric({ ok: success, latency: t1 - t0 });
 
       if (!success) throw new Error("Error simulado en el envío");
 
       saveToHistory(payload, true);
-
       console.log("✅ Mensaje simulado correctamente:", payload);
-      return { success: true, message: "Mensaje enviado correctamente (modo sin backend)" };
+
+      return { success: true, message: "Mensaje enviado correctamente (sin backend)" };
     } catch (err) {
       attempt++;
       trackMetric({ ok: false });
-
       console.warn(`⚠️ Error intento ${attempt}/${maxRetries}`);
 
       if (attempt > maxRetries) {

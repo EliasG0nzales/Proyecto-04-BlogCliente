@@ -45,12 +45,12 @@ export default function Contact() {
       ...data,
       date: now.toLocaleDateString(),
       time: now.toLocaleTimeString(),
-      status: "✅ Enviado correctamente",
+      status: "",
     };
 
     try {
-      const idempotencyKey = crypto.randomUUID();
-      await sendContact(data, idempotencyKey);
+      await sendContact(data);
+      logEntry.status = "✅ Enviado correctamente";
       setLogs((prev) => [logEntry, ...prev]);
       setToast({ type: "success", text: "✅ Mensaje enviado correctamente" });
       window.dispatchEvent(new CustomEvent("messageSent", { detail: { success: true } }));
@@ -81,7 +81,7 @@ export default function Contact() {
         <PaymentsLogPanel logs={logs} />
       </div>
 
-      <div className="relative z-10 bg-gradient-to-b from-[#2e2e4f]/80 to-[#1e1e35]/80 backdrop-blur-lg border border-white/20 shadow-[0_0_25px_5px_rgba(255,255,255,0.08)] rounded-3xl p-8 w-full max-w-2xl text-white">
+      <div className="relative z-10 electric-border orange p-8 w-full max-w-2xl text-white">
         <h2 className="text-2xl font-bold text-center mb-6 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
           📬 Registro de Contacto
         </h2>
